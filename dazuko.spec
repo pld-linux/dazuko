@@ -16,14 +16,14 @@
 Summary:	Linux Dazuko driver
 Summary(pl):	Sterownik Dazuko dla Linuksa
 Name:		dazuko
-Version:	2.0.4
-%define		_rel	0.3
+Version:	2.0.6
+%define		_rel	1
 Release:	%{_rel}
 Epoch:		0
 License:	BSD/GPL
 Group:		Base/Kernel
 Source0:	http://www.dazuko.org/files/dazuko-%{version}.tar.gz
-# Source0-md5:	e16da48766eaaf58550809fb0f6dbbef
+# Source0-md5:	844498651d22ddd76bea4104bf7c3e43
 URL:		http://www.dazuko.org/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
@@ -94,6 +94,27 @@ This package contains Linux SMP module.
 %description -n kernel-smp-misc-%{name} -l pl
 Ten pakiet zawiera sterownik dazuko dla Linuksa SMP.
 
+%package examples
+Summary:	Example code for Dazuko
+Group:		Development/Libraries
+
+%description examples
+Example code for Dazuko.
+
+%package static
+Summary:	Static libraries for Dazuko
+Group:		Development/Libraries
+
+%description static
+Static libraries for Dazuko.
+
+%package devel
+Summary:	Headers for Dazuko
+Group:		Development/Libraries
+
+%description devel
+Headers for Dazuko.
+
 %prep
 %setup -q
 
@@ -131,13 +152,25 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 done
 %endif
 
+%if %{with userspace}
+cd library
+make CFLAGS=-fPIC
+gcc -shared -Wl,-soname,libdazuko.so.0 -o libdazuko.so.0.0.0 *.o
+ln -s libdazuko.so.0.0.0 libdazuko.so.0
+ln -s libdazuko.so.0.0.0 libdazuko.so
+cd ..
+%endif
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+install -d $RPM_BUILD_ROOT{%{_examplesdir}/%{name}-%{version},%{_libdir},%{_includedir}}
 
 cp -a example* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+
+install library/libdazuko.* $RPM_BUILD_ROOT/%{_libdir}
+install dazukoio.h $RPM_BUILD_ROOT/%{_includedir}
 %endif
 
 %if %{with kernel}
@@ -179,7 +212,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with userspace}
 %files
+%attr(755,root,root) /usr/lib/libdazuko.so.*
+
+%files examples
 %doc README
 %defattr(644,root,root,755)
 %{_examplesdir}/%{name}-%{version}
+
+%files devel
+%{_includedir}/dazukoio.h
+%{_libdir}/*.so
+
+%files static
+%{_libdir}/*.a
 %endif
