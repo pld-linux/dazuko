@@ -133,7 +133,8 @@ Statyczne biblioteki Dazuko.
 %if %{with kernel}
 # NOTE: It's not autoconf configure.
 bash ./configure \
-	--kernelsrcdir=%{_kernelsrcdir}
+	--kernelsrcdir=%{_kernelsrcdir} \
+	--disable-local-dpath
 
 # kernel module(s)
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
