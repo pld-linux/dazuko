@@ -1,7 +1,3 @@
-#
-# Replace dazuko with real module name and misc
-# with required directory name.
-#
 # TODO: fix Name vs filename
 #
 # Conditional build:
