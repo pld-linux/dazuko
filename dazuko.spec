@@ -92,24 +92,38 @@ Ten pakiet zawiera sterownik dazuko dla Linuksa SMP.
 
 %package examples
 Summary:	Example code for Dazuko
+Summary(pl):	Przyk³adowy kod dla Dazuko
 Group:		Development/Libraries
 
 %description examples
 Example code for Dazuko.
 
+%description examples -l pl
+Przyk³adowy kod dla Dazuko.
+
+%package devel
+Summary:	Headers for Dazuko
+Summary(pl):	Pliki nag³ówkowe Dazuko
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description devel
+Headers for Dazuko.
+
+%description devel -l pl
+Pliki nag³ówkowe Dazuko.
+
 %package static
 Summary:	Static libraries for Dazuko
+Summary(pl):	Statyczne biblioteki Dazuko
 Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static libraries for Dazuko.
 
-%package devel
-Summary:	Headers for Dazuko
-Group:		Development/Libraries
-
-%description devel
-Headers for Dazuko.
+%description static -l pl
+Statyczne biblioteki Dazuko.
 
 %prep
 %setup -q
@@ -150,8 +164,9 @@ done
 
 %if %{with userspace}
 cd library
-make CFLAGS=-fPIC
-gcc -shared -Wl,-soname,libdazuko.so.0 -o libdazuko.so.0.0.0 *.o
+%{__make} \
+	CFLAGS="-fPIC"
+%{__cc} -shared -Wl,-soname,libdazuko.so.0 -o libdazuko.so.0.0.0 *.o
 ln -s libdazuko.so.0.0.0 libdazuko.so.0
 ln -s libdazuko.so.0.0.0 libdazuko.so
 cd ..
@@ -165,7 +180,7 @@ install -d $RPM_BUILD_ROOT{%{_examplesdir}/%{name}-%{version},%{_libdir},%{_incl
 
 cp -a example* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
-install library/libdazuko.* $RPM_BUILD_ROOT/%{_libdir}
+cp -af library/libdazuko.* $RPM_BUILD_ROOT/%{_libdir}
 install dazukoio.h $RPM_BUILD_ROOT/%{_includedir}
 %endif
 
@@ -181,6 +196,9 @@ install dazuko-smp.ko \
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %post	-n kernel-misc-dazuko
 %depmod %{_kernel_ver}
@@ -208,17 +226,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with userspace}
 %files
-%attr(755,root,root) /usr/lib/libdazuko.so.*
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libdazuko.so.*.*.*
 
 %files examples
-%doc README
 %defattr(644,root,root,755)
+%doc README
 %{_examplesdir}/%{name}-%{version}
 
 %files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libdazuko.so
 %{_includedir}/dazukoio.h
-%{_libdir}/*.so
 
 %files static
-%{_libdir}/*.a
+%defattr(644,root,root,755)
+%{_libdir}/lib*.a
 %endif
