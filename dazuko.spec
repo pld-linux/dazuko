@@ -1,4 +1,3 @@
-# TODO: fix Name vs filename
 #
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
@@ -6,8 +5,6 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
-#
-# main package.
 #
 Summary:	Linux Dazuko driver
 Summary(pl):	Sterownik Dazuko dla Linuksa
