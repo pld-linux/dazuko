@@ -2,6 +2,8 @@
 # Replace dazuko with real module name and misc
 # with required directory name.
 #
+# TODO: fix Name vs filename
+#
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -11,47 +13,52 @@
 #
 # main package.
 #
-Summary:	Dazuko
+Summary:	Linux Dazuko driver
+Summary(pl):	Sterownik Dazuko dla Linuksa
 Name:		dazuko
 Version:	2.0.4
 %define		_rel	0.3
 Release:	%{_rel}
 Epoch:		0
-License:	BSD / GPL
-Group:		System Environment/Kernel
-Source0:	http://www.dazuko.org/files/dazuko-2.0.4.tar.gz
+License:	BSD/GPL
+Group:		Base/Kernel
+Source0:	http://www.dazuko.org/files/dazuko-%{version}.tar.gz
 # Source0-md5:	e16da48766eaaf58550809fb0f6dbbef
-#Patch0:		%{name}-what.patch
 URL:		http://www.dazuko.org/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 BuildRequires:	bash
-#PreReq:		-
-#Requires(pre,post):	-
-#Requires(preun):	-
-#Requires(postun):	-
-#Requires:	-
-#Provides:	-
-#Obsoletes:	-
-#Conflicts:	-
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Dazuko aims to be a cross-platform device driver that allows applications to
-control file access on a system. By installing the driver, your system will be
-able to support file access control applications that are based on Dazuko. As
-this project becomes more popular and more applications choose Dazuko for their
-file access needs, it is hoped that this driver will become a common component
+Dazuko aims to be a cross-platform device driver that allows
+applications to control file access on a system. By installing the
+driver, your system will be able to support file access control
+applications that are based on Dazuko. As this project becomes more
+popular and more applications choose Dazuko for their file access
+needs, it is hoped that this driver will become a common component
 of most systems. 
 
-To install the dazuko kernel module install kernel-char-dazuko or
-kernel-smp-char-dazuko.
+To install the dazuko kernel module install kernel-misc-dazuko or
+kernel-smp-misc-dazuko.
+
+%description -l pl
+Dazuko ma byæ wieloplatformowym sterownikiem urz±dzenia pozwalaj±cym
+aplikacjom sterowaæ dostêpem do plików w systemie. Poprzez
+zainstalowanie sterownika system bêdzie móg³ wspieraæ aplikacje
+steruj±ce dostêpem do plików w oparciu o Dazuko. Kiedy ten projekt
+stanie siê popularny, autorzy maj± nadziejê, ¿e sterownik ten bêdzie
+popularnym elementem wiêkszo¶ci systemów.
+
+Aby zainstalowaæ modu³ j±dra nale¿y zainstalowaæ pakiet
+kernel-misc-dazuko lub kernel-smp-misc-dazuko.
 
 # kernel subpackages.
 %package -n kernel-misc-%{name}
 Summary:	Linux driver for dazuko
+Summary(pl):	Linuksowy sterownik dazuko
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
@@ -65,8 +72,12 @@ This is driver for dazuko for Linux.
 
 This package contains Linux module.
 
+%description -n kernel-misc-%{name} -l pl
+Ten pakiet zawiera sterownik dazuko dla Linuksa.
+
 %package -n kernel-smp-misc-%{name}
 Summary:	Linux SMP driver for dazuko
+Summary(pl):	Sterownik dazuko dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
@@ -79,6 +90,9 @@ Requires(postun):	%releq_kernel_smp
 This is driver for dazuko for Linux.
 
 This package contains Linux SMP module.
+
+%description -n kernel-smp-misc-%{name} -l pl
+Ten pakiet zawiera sterownik dazuko dla Linuksa SMP.
 
 %prep
 %setup -q
