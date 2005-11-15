@@ -13,7 +13,7 @@ Version:	2.0.6
 %define		_rel	1
 Release:	%{_rel}
 Epoch:		0
-License:	BSD/GPL
+License:	BSD (library), GPL (Linux kernel module)
 Group:		Base/Kernel
 Source0:	http://www.dazuko.org/files/dazuko-%{version}.tar.gz
 # Source0-md5:	844498651d22ddd76bea4104bf7c3e43
@@ -55,7 +55,7 @@ Summary(pl):	Linuksowy sterownik dazuko
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
+%if %{with kernel} && %{with dist_kernel}
 %requires_releq_kernel_up
 Requires(postun):	%releq_kernel_up
 %endif
@@ -74,7 +74,7 @@ Summary(pl):	Sterownik dazuko dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
+%if %{with kernel} && %{with dist_kernel}
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
 %endif
@@ -90,6 +90,7 @@ Ten pakiet zawiera sterownik dazuko dla Linuksa SMP.
 %package examples
 Summary:	Example code for Dazuko
 Summary(pl):	Przyk³adowy kod dla Dazuko
+License:	BSD
 Group:		Development/Libraries
 
 %description examples
@@ -101,6 +102,7 @@ Przyk³adowy kod dla Dazuko.
 %package devel
 Summary:	Headers for Dazuko
 Summary(pl):	Pliki nag³ówkowe Dazuko
+License:	BSD
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -113,6 +115,7 @@ Pliki nag³ówkowe Dazuko.
 %package static
 Summary:	Static libraries for Dazuko
 Summary(pl):	Statyczne biblioteki Dazuko
+License:	BSD
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -126,14 +129,14 @@ Statyczne biblioteki Dazuko.
 %setup -q
 
 %build
-
-%if %{with kernel}
 # NOTE: It's not autoconf configure.
 bash ./configure \
 	--kernelsrcdir=%{_kernelsrcdir} \
-	--disable-local-dpath
+	--disable-local-dpath \
+	%{!?with_userspace:--without-library} \
+	%{!?with_kernel:--without-module}
 
-# kernel module(s)
+%if %{with kernel}
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
@@ -164,7 +167,8 @@ done
 %if %{with userspace}
 cd library
 %{__make} \
-	CFLAGS="-fPIC"
+	CC="%{__cc}" \
+	CFLAGS="%{rpmcflags} -fPIC"
 %{__cc} -shared -Wl,-soname,libdazuko.so.0 -o libdazuko.so.0.0.0 *.o
 ln -s libdazuko.so.0.0.0 libdazuko.so.0
 ln -s libdazuko.so.0.0.0 libdazuko.so
@@ -179,8 +183,8 @@ install -d $RPM_BUILD_ROOT{%{_examplesdir}/%{name}-%{version},%{_libdir},%{_incl
 
 cp -a example* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
-cp -af library/libdazuko.* $RPM_BUILD_ROOT/%{_libdir}
-install dazukoio.h $RPM_BUILD_ROOT/%{_includedir}
+cp -af library/libdazuko.* $RPM_BUILD_ROOT%{_libdir}
+install dazukoio.h $RPM_BUILD_ROOT%{_includedir}
 %endif
 
 %if %{with kernel}
