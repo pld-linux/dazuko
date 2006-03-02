@@ -158,7 +158,6 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	bash ./configure \
 		--kernelsrcdir=%{_kernelsrcdir} \
 		%{?debug:--enable-debug} \
-		--disable-local-dpath \
 		--disable-compat1 \
 		--without-library
 
@@ -183,7 +182,6 @@ done
 # NOTE: It's not autoconf configure.
 bash ./configure \
 	%{?debug:--enable-debug} \
-	--disable-local-dpath \
 	--disable-compat1 \
 	--without-module
 
