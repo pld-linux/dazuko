@@ -5,7 +5,7 @@
  
  			TEMPNAME="$LINUX_SRC/include"
 -			echo "CFLAGS = -Wall -D__KERNEL__ -DMODULE -I$TEMPNAME" >> Makefile
-+			echo "CFLAGS = -Wall -D__KERNEL__ -DMODULE -I$TEMPNAME -Io/include" >> Makefile
++			echo "CFLAGS = -Wall -D__KERNEL__ -DMODULE -Io/include -I$TEMPNAME" >> Makefile
  
  			if [ -f "$TEMPNAME/linux/config.h" ]
  			then
