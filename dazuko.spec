@@ -24,7 +24,7 @@ Source0:	http://www.dazuko.org/files/%{name}-%{version}.tar.gz
 Patch0:		%{name}-kbuild.patch
 URL:		http://www.dazuko.org/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.14}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.14}
 BuildRequires:	rpmbuild(macros) >= 1.286
 %endif
 BuildRequires:	bash
