@@ -10,17 +10,17 @@
 %undefine	with_dist_kernel
 %endif
 #
-%define		_rel	1
+%define		_rel	0.1
 Summary:	Linux Dazuko driver
 Summary(pl):	Sterownik Dazuko dla Linuksa
 Name:		dazuko
-Version:	2.0.6
+Version:	2.2.0
 Release:	%{_rel}
 Epoch:		0
 License:	BSD (library), GPL (Linux kernel module)
 Group:		Base/Kernel
 Source0:	http://www.dazuko.org/files/%{name}-%{version}.tar.gz
-# Source0-md5:	844498651d22ddd76bea4104bf7c3e43
+# Source0-md5:	bbe7651888d9904fb6c82fdb02331d82
 Patch0:		%{name}-kbuild.patch
 URL:		http://www.dazuko.org/
 %if %{with kernel}
