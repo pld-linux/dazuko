@@ -21,6 +21,7 @@ License:	BSD (library), GPL (Linux kernel module)
 Group:		Base/Kernel
 Source0:	http://www.dazuko.org/files/%{name}-%{version}.tar.gz
 # Source0-md5:	844498651d22ddd76bea4104bf7c3e43
+Patch0:		%{name}-kbuild.patch
 URL:		http://www.dazuko.org/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
@@ -131,17 +132,9 @@ Statyczne biblioteki Dazuko.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
-# NOTE: It's not autoconf configure.
-bash ./configure \
-	%{?debug:--enable-debug} \
-	--kernelsrcdir=%{_kernelsrcdir} \
-	--disable-local-dpath \
-	--disable-compat1 \
-	%{!?with_userspace:--without-library} \
-	%{!?with_kernel:--without-module}
-
 %if %{with kernel}
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
@@ -160,7 +153,15 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 %endif
 #
 #	patching/creating makefile(s) (optional)
-#
+
+	# NOTE: It's not autoconf configure.
+	bash ./configure \
+		--kernelsrcdir=%{_kernelsrcdir} \
+		%{?debug:--enable-debug} \
+		--disable-local-dpath \
+		--disable-compat1 \
+		--without-library
+
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
 		SYSSRC=%{_kernelsrcdir} \
@@ -179,6 +180,13 @@ done
 %endif
 
 %if %{with userspace}
+# NOTE: It's not autoconf configure.
+bash ./configure \
+	%{?debug:--enable-debug} \
+	--disable-local-dpath \
+	--disable-compat1 \
+	--without-module
+
 cd library
 %{__make} \
 	CC="%{__cc}" \

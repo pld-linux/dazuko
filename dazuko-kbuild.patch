@@ -1,0 +1,20 @@
+--- dazuko-2.0.6/configure~	2006-03-02 20:27:30.000000000 +0200
++++ dazuko-2.0.6/configure	2006-03-02 20:27:33.000000000 +0200
+@@ -1012,7 +1012,7 @@
+ 			echo "CC ?= gcc" > Makefile
+ 
+ 			TEMPNAME="$LINUX_SRC/include"
+-			echo "CFLAGS = -Wall -D__KERNEL__ -DMODULE -I$TEMPNAME" >> Makefile
++			echo "CFLAGS = -Wall -D__KERNEL__ -DMODULE -I$TEMPNAME -Io/include" >> Makefile
+ 
+ 			if [ -f "$TEMPNAME/linux/config.h" ]
+ 			then
+@@ -1047,7 +1047,7 @@
+ 			./linux_conf > linux.config
+ 			rm -f linux_conf
+ 
+-			. linux.config
++			. ./linux.config
+ 			rm -f linux.config
+ 
+ 			echo -n "checking if Linux is RSBAC patched... "
