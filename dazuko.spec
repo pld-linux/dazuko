@@ -135,7 +135,7 @@ Statyczne biblioteki Dazuko.
 %build
 # NOTE: It's not autoconf configure.
 bash ./configure \
-	%{?debug:--enable-debug}
+	%{?debug:--enable-debug} \
 	--kernelsrcdir=%{_kernelsrcdir} \
 	--disable-local-dpath \
 	--disable-compat1 \
