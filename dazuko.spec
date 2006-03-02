@@ -24,7 +24,7 @@ Source0:	http://www.dazuko.org/files/%{name}-%{version}.tar.gz
 URL:		http://www.dazuko.org/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.217
+BuildRequires:	rpmbuild(macros) >= 1.286
 %endif
 BuildRequires:	bash
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -60,8 +60,8 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
-%requires_releq_kernel_up
-Requires(postun):	%releq_kernel_up
+%{requires_releq_kernel_up}
+%{requires_releq_kernel_up -s postun}
 %endif
 
 %description -n kernel-misc-%{name}
@@ -79,8 +79,8 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
-%requires_releq_kernel_smp
-Requires(postun):	%releq_kernel_smp
+%{requires_releq_kernel_smp}
+%{requires_releq_kernel_smp -s postun}
 %endif
 
 %description -n kernel-smp-misc-%{name}
@@ -152,7 +152,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
 	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
 %if %{with dist_kernel}
-	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+	%{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
 %else
 	install -d o/include/config
 	touch o/include/config/MARKER
