@@ -6,21 +6,25 @@
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
 #
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+#
+%define		_rel	1
 Summary:	Linux Dazuko driver
 Summary(pl):	Sterownik Dazuko dla Linuksa
 Name:		dazuko
 Version:	2.0.6
-%define		_rel	1
 Release:	%{_rel}
 Epoch:		0
 License:	BSD (library), GPL (Linux kernel module)
 Group:		Base/Kernel
-Source0:	http://www.dazuko.org/files/dazuko-%{version}.tar.gz
+Source0:	http://www.dazuko.org/files/%{name}-%{version}.tar.gz
 # Source0-md5:	844498651d22ddd76bea4104bf7c3e43
 URL:		http://www.dazuko.org/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.153
+BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	bash
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -31,8 +35,8 @@ applications to control file access on a system. By installing the
 driver, your system will be able to support file access control
 applications that are based on Dazuko. As this project becomes more
 popular and more applications choose Dazuko for their file access
-needs, it is hoped that this driver will become a common component
-of most systems. 
+needs, it is hoped that this driver will become a common component of
+most systems.
 
 To install the dazuko kernel module install kernel-misc-dazuko or
 kernel-smp-misc-dazuko.
@@ -55,7 +59,7 @@ Summary(pl):	Linuksowy sterownik dazuko
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
-%if %{with kernel} && %{with dist_kernel}
+%if %{with dist_kernel}
 %requires_releq_kernel_up
 Requires(postun):	%releq_kernel_up
 %endif
@@ -74,7 +78,7 @@ Summary(pl):	Sterownik dazuko dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
-%if %{with kernel} && %{with dist_kernel}
+%if %{with dist_kernel}
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
 %endif
@@ -131,8 +135,10 @@ Statyczne biblioteki Dazuko.
 %build
 # NOTE: It's not autoconf configure.
 bash ./configure \
+	%{?debug:--enable-debug}
 	--kernelsrcdir=%{_kernelsrcdir} \
 	--disable-local-dpath \
+	--disable-compat1 \
 	%{!?with_userspace:--without-library} \
 	%{!?with_kernel:--without-module}
 
@@ -141,23 +147,31 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-	rm -rf include
-	install -d include/{linux,config}
-	ln -sf %{_kernelsrcdir}/config-$cfg .config
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-	ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-	touch include/config/MARKER
+	install -d o/include/linux
+	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+%if %{with dist_kernel}
+	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+%else
+	install -d o/include/config
+	touch o/include/config/MARKER
+	ln -sf %{_kernelsrcdir}/scripts o/scripts
+%endif
 #
 #	patching/creating makefile(s) (optional)
 #
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		M=$PWD O=$PWD \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
 	%{__make} -C %{_kernelsrcdir} modules \
 		CC="%{__cc}" CPP="%{__cpp}" \
-		M=$PWD O=$PWD \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
 
 	mv dazuko{,-$cfg}.ko
