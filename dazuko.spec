@@ -60,8 +60,8 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
-%{requires_releq_kernel_up}
-%{requires_releq_kernel_up -s postun}
+%requires_releq_kernel_up
+Requires(postun):	%releq_kernel_up
 %endif
 
 %description -n kernel-misc-%{name}
@@ -79,8 +79,8 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
-%{requires_releq_kernel_smp}
-%{requires_releq_kernel_smp -s postun}
+%requires_releq_kernel_smp
+Requires(postun):	%releq_kernel_smp
 %endif
 
 %description -n kernel-smp-misc-%{name}
