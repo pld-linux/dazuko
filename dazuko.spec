@@ -6,7 +6,7 @@
 %bcond_without	userspace	# don't build userspace module
 %bcond_with	verbose		# verbose build (V=1)
 #
-%if %{without kernel}
+%if !%{with kernel}
 %undefine	with_dist_kernel
 %endif
 #
