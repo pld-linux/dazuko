@@ -14,20 +14,20 @@
 Summary:	Linux Dazuko driver
 Summary(pl):	Sterownik Dazuko dla Linuksa
 Name:		dazuko
-Version:	2.2.0
+Version:	2.3.2
 Release:	%{_rel}
 Epoch:		0
 License:	BSD (library), GPL (Linux kernel module)
 Group:		Base/Kernel
 Source0:	http://www.dazuko.org/files/%{name}-%{version}.tar.gz
-# Source0-md5:	bbe7651888d9904fb6c82fdb02331d82
+# Source0-md5:	bb32e24ad60a31dbfc419d3341287f68
 Patch0:		%{name}-kbuild.patch
+Patch1:		%{name}-caps.patch
 URL:		http://www.dazuko.org/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.14}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.14}
 BuildRequires:	rpmbuild(macros) >= 1.286
 %endif
-BuildRequires:	bash
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -54,7 +54,7 @@ Aby zainstalowaæ modu³ j±dra nale¿y zainstalowaæ pakiet
 kernel-misc-dazuko lub kernel-smp-misc-dazuko.
 
 # kernel subpackages.
-%package -n kernel-misc-%{name}
+%package -n kernel%{_alt_kernel}-misc-%{name}
 Summary:	Linux driver for dazuko
 Summary(pl):	Linuksowy sterownik dazuko
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -65,15 +65,15 @@ Requires(post,postun):	/sbin/depmod
 Requires(postun):	%releq_kernel_up
 %endif
 
-%description -n kernel-misc-%{name}
+%description -n kernel%{_alt_kernel}-misc-%{name}
 This is driver for dazuko for Linux.
 
 This package contains Linux module.
 
-%description -n kernel-misc-%{name} -l pl
+%description -n kernel%{_alt_kernel}-misc-%{name} -l pl
 Ten pakiet zawiera sterownik dazuko dla Linuksa.
 
-%package -n kernel-smp-misc-%{name}
+%package -n kernel%{_alt_kernel}-smp-misc-%{name}
 Summary:	Linux SMP driver for dazuko
 Summary(pl):	Sterownik dazuko dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -84,12 +84,12 @@ Requires(post,postun):	/sbin/depmod
 Requires(postun):	%releq_kernel_smp
 %endif
 
-%description -n kernel-smp-misc-%{name}
+%description -n kernel%{_alt_kernel}-smp-misc-%{name}
 This is driver for dazuko for Linux.
 
 This package contains Linux SMP module.
 
-%description -n kernel-smp-misc-%{name} -l pl
+%description -n kernel%{_alt_kernel}-smp-misc-%{name} -l pl
 Ten pakiet zawiera sterownik dazuko dla Linuksa SMP.
 
 %package examples
@@ -133,6 +133,7 @@ Statyczne biblioteki Dazuko.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if %{with kernel}
@@ -155,7 +156,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 #	patching/creating makefile(s) (optional)
 
 	# NOTE: It's not autoconf configure.
-	bash ./configure \
+	./configure \
 		--kernelsrcdir=%{_kernelsrcdir} \
 		%{?debug:--enable-debug} \
 		--disable-compat1 \
@@ -180,7 +181,7 @@ done
 
 %if %{with userspace}
 # NOTE: It's not autoconf configure.
-bash ./configure \
+./configure \
 	%{?debug:--enable-debug} \
 	--disable-compat1 \
 	--without-module
@@ -223,25 +224,25 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
-%post	-n kernel-misc-dazuko
+%post	-n kernel%{_alt_kernel}-misc-dazuko
 %depmod %{_kernel_ver}
 
-%postun	-n kernel-misc-dazuko
+%postun	-n kernel%{_alt_kernel}-misc-dazuko
 %depmod %{_kernel_ver}
 
-%post	-n kernel-smp-misc-dazuko
+%post	-n kernel%{_alt_kernel}-smp-misc-dazuko
 %depmod %{_kernel_ver}smp
 
-%postun	-n kernel-smp-misc-dazuko
+%postun	-n kernel%{_alt_kernel}-smp-misc-dazuko
 %depmod %{_kernel_ver}smp
 
 %if %{with kernel}
-%files -n kernel-misc-dazuko
+%files -n kernel%{_alt_kernel}-misc-dazuko
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*.ko*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-misc-dazuko
+%files -n kernel%{_alt_kernel}-smp-misc-dazuko
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/misc/*.ko*
 %endif
