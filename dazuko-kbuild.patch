@@ -3,18 +3,9 @@
 @@ -1012,7 +1012,7 @@
  			echo "CC ?= gcc" > Makefile
  
- 			TEMPNAME="$LINUX_SRC/include"
+ 			TEMPNAME="$LINUX_OBJ/include"
 -			echo "CFLAGS = -Wall -D__KERNEL__ -DMODULE -I$TEMPNAME" >> Makefile
 +			echo "CFLAGS = -Wall -D__KERNEL__ -DMODULE -Io/include -I$TEMPNAME" >> Makefile
  
  			if [ -f "$TEMPNAME/linux/config.h" ]
  			then
-@@ -1047,7 +1047,7 @@
- 			./linux_conf > linux.config
- 			rm -f linux_conf
- 
--			. linux.config
-+			. ./linux.config
- 			rm -f linux.config
- 
- 			echo -n "checking if Linux is RSBAC patched... "
