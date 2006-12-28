@@ -1,0 +1,16 @@
+--- dazuko-2.3.2/configure~	2006-12-28 00:20:08.000000000 +0000
++++ dazuko-2.3.2/configure	2006-12-28 00:24:49.762047000 +0000
+@@ -419,10 +419,9 @@ do_linux26()
+ 		if [ $CONFIG_SECURITY_CAPABILITIES -ne 0 ]
+ 		then
+ 			echo "built-in :("
+-			echo "error: capabilities are built-in to the kernel:"
+-			echo "       you will need to recompile a kernel with capabilities"
+-			echo "       as a kernel module"
+-			exit 1
++			echo "warning: capabilities are built-in to the kernel:"
++			echo "       you will need to add capability.disable=1"
++			echo "       as boot parameter"
+ 		else
+ 			echo "ok"
+ 		fi
