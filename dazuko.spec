@@ -12,7 +12,7 @@
 #
 %define		_rel	1
 Summary:	Linux Dazuko driver
-Summary(pl):	Sterownik Dazuko dla Linuksa
+Summary(pl.UTF-8):   Sterownik Dazuko dla Linuksa
 Name:		dazuko
 Version:	2.3.2
 Release:	%{_rel}
@@ -42,21 +42,21 @@ most systems.
 To install the dazuko kernel module install kernel-misc-dazuko or
 kernel-smp-misc-dazuko.
 
-%description -l pl
-Dazuko ma byæ wieloplatformowym sterownikiem urz±dzenia pozwalaj±cym
-aplikacjom sterowaæ dostêpem do plików w systemie. Poprzez
-zainstalowanie sterownika system bêdzie móg³ wspieraæ aplikacje
-steruj±ce dostêpem do plików w oparciu o Dazuko. Kiedy ten projekt
-stanie siê popularny, autorzy maj± nadziejê, ¿e sterownik ten bêdzie
-popularnym elementem wiêkszo¶ci systemów.
+%description -l pl.UTF-8
+Dazuko ma byÄ‡ wieloplatformowym sterownikiem urzÄ…dzenia pozwalajÄ…cym
+aplikacjom sterowaÄ‡ dostÄ™pem do plikÃ³w w systemie. Poprzez
+zainstalowanie sterownika system bÄ™dzie mÃ³gÅ‚ wspieraÄ‡ aplikacje
+sterujÄ…ce dostÄ™pem do plikÃ³w w oparciu o Dazuko. Kiedy ten projekt
+stanie siÄ™ popularny, autorzy majÄ… nadziejÄ™, Å¼e sterownik ten bÄ™dzie
+popularnym elementem wiÄ™kszoÅ›ci systemÃ³w.
 
-Aby zainstalowaæ modu³ j±dra nale¿y zainstalowaæ pakiet
+Aby zainstalowaÄ‡ moduÅ‚ jÄ…dra naleÅ¼y zainstalowaÄ‡ pakiet
 kernel-misc-dazuko lub kernel-smp-misc-dazuko.
 
 # kernel subpackages.
 %package -n kernel%{_alt_kernel}-misc-%{name}
 Summary:	Linux driver for dazuko
-Summary(pl):	Linuksowy sterownik dazuko
+Summary(pl.UTF-8):   Linuksowy sterownik dazuko
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
@@ -70,12 +70,12 @@ This is driver for dazuko for Linux.
 
 This package contains Linux module.
 
-%description -n kernel%{_alt_kernel}-misc-%{name} -l pl
+%description -n kernel%{_alt_kernel}-misc-%{name} -l pl.UTF-8
 Ten pakiet zawiera sterownik dazuko dla Linuksa.
 
 %package -n kernel%{_alt_kernel}-smp-misc-%{name}
 Summary:	Linux SMP driver for dazuko
-Summary(pl):	Sterownik dazuko dla Linuksa SMP
+Summary(pl.UTF-8):   Sterownik dazuko dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
@@ -89,24 +89,24 @@ This is driver for dazuko for Linux.
 
 This package contains Linux SMP module.
 
-%description -n kernel%{_alt_kernel}-smp-misc-%{name} -l pl
+%description -n kernel%{_alt_kernel}-smp-misc-%{name} -l pl.UTF-8
 Ten pakiet zawiera sterownik dazuko dla Linuksa SMP.
 
 %package examples
 Summary:	Example code for Dazuko
-Summary(pl):	Przyk³adowy kod dla Dazuko
+Summary(pl.UTF-8):   PrzykÅ‚adowy kod dla Dazuko
 License:	BSD
 Group:		Development/Libraries
 
 %description examples
 Example code for Dazuko.
 
-%description examples -l pl
-Przyk³adowy kod dla Dazuko.
+%description examples -l pl.UTF-8
+PrzykÅ‚adowy kod dla Dazuko.
 
 %package devel
 Summary:	Headers for Dazuko
-Summary(pl):	Pliki nag³ówkowe Dazuko
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe Dazuko
 License:	BSD
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
@@ -114,12 +114,12 @@ Requires:	%{name} = %{version}-%{release}
 %description devel
 Headers for Dazuko.
 
-%description devel -l pl
-Pliki nag³ówkowe Dazuko.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe Dazuko.
 
 %package static
 Summary:	Static libraries for Dazuko
-Summary(pl):	Statyczne biblioteki Dazuko
+Summary(pl.UTF-8):   Statyczne biblioteki Dazuko
 License:	BSD
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
@@ -127,7 +127,7 @@ Requires:	%{name}-devel = %{version}-%{release}
 %description static
 Static libraries for Dazuko.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczne biblioteki Dazuko.
 
 %prep
