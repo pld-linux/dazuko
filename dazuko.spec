@@ -109,7 +109,7 @@ Statyczne biblioteki Dazuko.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P0 -p1
 
 cat > Makefile << EOF
 obj-m += dazuko.o
